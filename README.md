@@ -26,7 +26,7 @@ With the project environment activated and dependencies installed, run:
 powershell -ExecutionPolicy Bypass -File .\build_windows.ps1
 ```
 
-The app is created at `dist\AudioNotesAI\AudioNotesAI.exe`. Keep the entire `dist\AudioNotesAI` folder together when moving the app. The first transcription downloads the Whisper Base model (roughly 150 MB) to the local model cache. The Base model runs on CPU with int8 to limit memory use on an 8 GB computer.
+The app is created at `dist-updated\AudioNotesAI\AudioNotesAI.exe`. Keep the entire `dist-updated\AudioNotesAI` folder together when moving the app. The first transcription downloads the Whisper Base model (roughly 150 MB) to the local model cache. The Base model runs on CPU with int8 to limit memory use on an 8 GB computer.
 
 ## GitHub
 

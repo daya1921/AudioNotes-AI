@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import queue
+import sys
 import threading
 from datetime import datetime
 from pathlib import Path
@@ -16,9 +17,10 @@ import soundfile as sf
 from transcription.transcribe import TranscriptionResult, save_transcription, transcribe_audio
 
 
-ROOT = Path(__file__).resolve().parent
-RECORDINGS = ROOT / "recordings"
-TRANSCRIPTS = ROOT / "notes"
+PROJECT_ROOT = Path(__file__).resolve().parent
+APP_ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else PROJECT_ROOT
+RECORDINGS = APP_ROOT / "recordings"
+TRANSCRIPTS = APP_ROOT / "notes"
 SAMPLE_RATE = 16_000
 CHUNK_SECONDS = 3
 
@@ -170,8 +172,23 @@ class AudioNotesApp:
             audio_path = RECORDINGS / f"recording_{stamp}.wav"
             note_path = TRANSCRIPTS / f"notes_{stamp}.txt"
             sf.write(audio_path, audio, SAMPLE_RATE)
+            peak = float(np.max(np.abs(audio)))
+            rms = float(np.sqrt(np.mean(np.square(audio))))
+            if peak < 0.0001 or rms < 0.00001:
+                raise RuntimeError(
+                    "The recording was silent, so no transcript was created. "
+                    "For system audio, play sound through the selected output while recording. "
+                    "For speech, select your microphone and speak near it. "
+                    f"The silent recording is saved at: {audio_path}"
+                )
             self.messages.put(("status", "Audio saved. Loading the local speech model…"))
             result = transcribe_audio(audio_path)
+            if not result.transcript and not result.translation:
+                raise RuntimeError(
+                    "Audio was captured, but no clear speech was recognized. "
+                    "Try a louder recording with less background noise. "
+                    f"The audio is saved at: {audio_path}"
+                )
             save_transcription(result, note_path)
             self.messages.put(("success", (result, audio_path, note_path)))
         except Exception as exc:
@@ -193,7 +210,9 @@ class AudioNotesApp:
                     )
                     self._set_ready()
                 elif kind == "error":
-                    self.status.set("Recording or transcription failed.")
+                    self.status.set(str(payload).split(". ")[0])
+                    self.output.delete("1.0", "end")
+                    self.output.insert("end", str(payload))
                     messagebox.showerror("AudioNotes AI", str(payload))
                     self._set_ready()
         except queue.Empty:

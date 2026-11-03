@@ -5,6 +5,7 @@ venv/
 .env
 /build/
 /dist/
+/dist-updated/
 .pip-tmp/
 .build-tmp/
 recordings/*.wav
