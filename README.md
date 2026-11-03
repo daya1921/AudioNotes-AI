@@ -11,10 +11,6 @@ A Windows desktop app that records microphone or system audio and creates a Hind
 - Save transcripts and translations as UTF-8 text files.
 - Build a portable Windows app folder with PyInstaller.
 
-## Demo
-
-Add a short screen recording or a screenshot showing a successful transcription here before sharing the repository with interviewers. Avoid including private recordings or personal information.
-
 ## Tech
 
 - Python and Tkinter for the Windows desktop interface
@@ -22,32 +18,6 @@ Add a short screen recording or a screenshot showing a successful transcription 
 - faster-whisper with the Whisper Base model for local speech recognition and translation
 - NumPy and SoundFile for audio processing and WAV output
 - PyInstaller for Windows packaging
-
-## Run from source
-
-Use the project's existing `venv` if it is already set up. Otherwise, install 64-bit Python and run these commands in PowerShell from the project folder:
-
-```powershell
-py -3.14 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python main.py
-```
-
-Choose a microphone to record nearby speech. Choose a loopback device to record audio playing through that device; make sure the audio is playing while recording. Click **Start recording**, then **Stop and make notes**.
-
-## Build the Windows app
-
-With the virtual environment active and dependencies installed, run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\build_windows.ps1
-```
-
-The app is created at `dist-updated\AudioNotesAI\AudioNotesAI.exe`. Keep the entire `dist-updated\AudioNotesAI` folder together when moving the app. Audio and text outputs are saved in `recordings/` and `notes/` beside the executable.
-
-The first transcription downloads the Whisper Base model (about 150 MB). Later runs use the local model cache. Base runs on CPU with int8 to limit memory use on an 8 GB computer.
 
 ## Data and limitations
 
