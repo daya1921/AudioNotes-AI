@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+recordings/*.wav
+notes/*.txt
+transcription/transcript.txt
